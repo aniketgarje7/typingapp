@@ -5,8 +5,7 @@ const GraphD = createContext()
 
 const GraphContext = ({children}) => {
 const [wpmd,setWpm] = useState(0)
-const [accuracy,setAccuracy] = useState(0)
-const [graphData,setGraphData] = useState([[0,0]])
+
 
     
  return (

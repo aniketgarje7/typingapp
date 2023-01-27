@@ -22,8 +22,9 @@ ChartJS.register(
     Legend
 );
 const type = ''
-const Graph = ({graph}) => {
-    
+
+const Graph = ({graph,labeld}) => {
+   
   return (
     <div>
          <Line 
@@ -33,7 +34,7 @@ const Graph = ({graph}) => {
                     datasets: [
                         {
                             data: graph.map(i=>i[1]),
-                            label: 'wpm',
+                            label: `${labeld}`,
                             borderColor:'black'
                         }
                     ]

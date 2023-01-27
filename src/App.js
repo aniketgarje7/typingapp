@@ -1,12 +1,12 @@
 import React from 'react'
 import TextBox from './Component/TextBox'
-import Time from './Component/Time'
-import { BrowserRouter as Router,Routes,Route } from 'react-router-dom'
+import Navbar from './Component/Navbar'
+
 
 const App = () => {
   return (
      <>
-     <Time/>
+     <Navbar/>
      <TextBox/>
      </>
   )

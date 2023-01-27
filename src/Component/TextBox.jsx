@@ -1,9 +1,9 @@
 import '.././app.css'
 import Stats from './Stats';
-
+import Time from './Time'
 import { useEffect, useState, useRef, createRef} from "react";
 import { GetTestContext } from './Context/Testime';
-
+import {Box, Typography} from '@mui/material'
 var randomWords = require('random-words')
 
 
@@ -17,14 +17,15 @@ const TextBox = () => {
   const [count, setCount] = useState(0)
   const [typedChar, setTypedChar] = useState(0)
   const [correctWord, setCorrectWord] = useState(0)
-  const [graph,setGraph] = useState([[0,0]])
+  const [graph,setGraph] = useState([])
+  const [acrcyGraph,setAcrcyGraph] = useState([])
   const [speed,setSpeed] = useState(0)
   const [testEnd,setTestEnd] = useState(false)
-  const arr = [...Array(50).fill(0).map(i => createRef())]
+  const arr = [...Array(100).fill(0).map(i => createRef())]
   
   //   useEffects
   useEffect(() => {
-    setWord(randomWords(50))
+    setWord(randomWords(100))
     focusInf()
   },[])
 
@@ -133,45 +134,55 @@ const TextBox = () => {
   const WPM = () => {
     return speed===0?0:Math.floor((typedChar / 5)/(speed/60))
   }
+
   // funcion for counting accuracy
   const accuracy = () => {
-    return (correctWord / wordIndex) * 100
+    let accuracy =  (correctWord / wordIndex) * 100
+    return !Number.isNaN(accuracy)?accuracy.toFixed(1):0
   }
+  
   // creating graph of time vs speed
   if(count>speed)
   {
     setSpeed(prev=>prev+1)
     setGraph((prevd)=>[...prevd,[(speed),WPM()]])
-    // dispatch({type:'WPM',action:{typedChar:typedChar,speed:speed}})
+    setAcrcyGraph((prev)=>[...prev,[(speed),accuracy()]])
   }
+
 //  retake the test
 const retake = ()=>{
-  setCount(1)
+  setCount(0)
   setCharIndex(0)
   setWordIndex(0)
-  setGraph([[0,0]])
+  setGraph([])
+  setAcrcyGraph([])
   setCorrectWord(0)
   setStart(false)
   setTypedChar(0)
   setSpeed(0)
+  setTestEnd(false)
 }
-console.log(speed)
+console.log('working')
   return (
     <>
    
-    <div>{testEnd ? <Stats wpm={WPM} accuracy={accuracy} graph={graph} retake={retake}/> :
-      <div className="App" onClick={()=>inf.current.focus()}>
-        <div><h1>{testTime+" "+count}</h1>
-          <h3>{ WPM()}</h3>
-          <h3>{!Number.isNaN(accuracy()) && accuracy().toFixed(2) + '%'}</h3>
-        </div>
-        <input onKeyDown={handleKeys} ref={inf} />
-
-        <div className='words'>
+    <div>{testEnd ? <Stats wpm={WPM} accuracy={accuracy} graph={graph} retake={retake} acrcyGraph={acrcyGraph}/> :
+      <Box className="App" onClick={()=>inf.current.focus()}>
+        <Box sx={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <Time/>
+        <Box sx={{display:'flex', justifyContent:'space-between',width:'30%'}}>
+        <Typography>Time : {testTime-count}</Typography>
+          <Typography>WPM : { WPM()}</Typography>
+          <Typography>Accuracy : {accuracy() + '%'}</Typography>
+       
+        </Box>
+        </Box>
+        <input onKeyDown={handleKeys} ref={inf} style={{opacity:'0'}}/>
+        <div className='words' >
           {word.map((single, i) => <span className='word' ref={arr[i]} key={i}>
             {single.split('').map((s, i) => <span key={i}>{s}</span>)}</span>)}</div>
 
-      </div>}
+      </Box>}
     </div>
     </>
   )
